@@ -1,6 +1,8 @@
-# Hurry Up Offense: Question Doc (v1.0)
+# Hurry Up Offense: Question Doc (v1.1)
 
 Status: agreed. Written BEFORE touching data so we can't quietly change definitions to fit the result.
+
+v1.1 (2026-11-18): added bucket B0 and the boundary rule (v1.0 buckets only covered the last 15 minutes of a 30-minute half), spelled out the drive-start rules, closed the open items, added the uncertainty method. No outcome data had been looked at.
 
 ## 1. The question
 
@@ -22,10 +24,11 @@ Claim B is the one we care about most. Claim A is the foundation.
 
 ## 4. Time definitions
 
-Time is `half_seconds_remaining`. Buckets (minutes left in the half):
+Time is `half_seconds_remaining`, measured at the start of the play. Buckets (minutes left in the half):
 
 | Bucket | Range |
 |---|---|
+| B0 | 30:00 to 15:00 |
 | B1 | 15:00 to 8:00 |
 | B2 | 8:00 to 4:00 |
 | B3 | 4:00 to 3:00 |
@@ -33,10 +36,13 @@ Time is `half_seconds_remaining`. Buckets (minutes left in the half):
 | B5 | 2:00 to 1:00 |
 | B6 | 1:00 to 0:00 |
 
+- **Boundaries:** a play sitting exactly on a boundary goes in the later bucket (closer to the end of the half). So 4:00 exactly is B3, 3:00 exactly is B4, and 15:00 exactly is B1.
 - **"Late" (headline) = last 4 minutes of the half = B3 to B6.**
 - The bucket curve shows where the shift actually starts. The headline is one summary number.
 - A drive belongs to the bucket it **starts** in.
-- **Minimum time for a drive to count: 30 seconds left at the start of the drive.** Starting field position and time left are both controlled for, and results are also reported split by starting zone (so short-field drives, like a turnover near the opponent's end zone, can be seen separately).
+- **Drive start rule:** a drive must start with at least 30 seconds left in the half to count. Drives starting with under 30 seconds are excluded.
+- **Drives that start with 30+ seconds but get cut off by the end of the half stay IN the main run** (they count as not scoring). This works against the hypothesis, so a surge that survives is stronger. A rerun without them is a robustness check.
+- Starting field position and time left are both controlled for, and results are also reported split by starting zone (so short-field drives, like a turnover near the opponent's end zone, can be seen separately).
 
 ## 5. Outcome metrics
 
@@ -49,7 +55,7 @@ Why both: EPA doesn't know what coverage the defence is in, so a soft-zone under
 
 **Definition 1 (scoring).** A team has "struggled" going into a drive if, over **all its prior drives in the game** (minimum 3 prior drives), it has:
 - no touchdowns, AND
-- below-average EPA per drive (average = league average for that season).
+- below-average EPA per drive (average = league average EPA per drive for that season).
 
 This crosses halftime on purpose, so the first drive of the 2nd half can be assessed too. **It never looks back into previous games. Every lookback is confined to the current game only.** We report results split by how many prior drives the team had, since a "no TD in 3 drives" team and a "no TD in 9 drives" team are not the same group.
 
@@ -102,23 +108,26 @@ Rough rule set up front:
 - It survives like-for-like comparison (same down, distance, field position).
 - For Claim B: late drives after a struggle beat drives at other points after a struggle.
 
-## 10. Robustness checks
+## 10. Robustness checks and uncertainty
 
 Rerun the main result with one choice changed, to see if it survives:
 - Opening drives removed from the baseline.
+- Drives cut off by the end of the half removed.
 - Late window of 3 and 5 minutes instead of 4.
 - Drive minimum at 20 and 25 seconds instead of 30.
 - "Struggled" using only the last 4, 6, or 8 drives.
 - Team-vs-itself comparison.
 
+**Uncertainty:** for the headline number and the bucket curve, bootstrap confidence intervals, resampling whole games (not single drives), since drives in one game aren't independent. Used in notebook 02. With this much data almost any gap will be "significant", so we read the interval for effect size, not just for whether it exists.
+
 ## 11. Game state
 
 Not part of the headline, so Claims A and B stay purely about time. It is recorded for every play (score differential, timeouts, win probability) and used in the mechanism step (H7). If the late effect looks similar whether the offence is leading, tied or trailing, that supports "it's purely time."
 
-## 12. Open items to decide
+## 12. Resolved items
 
-- Exact definition of "below-average EPA per drive" (league-wide vs team's own average).
-- How to handle drives that span the end of a half or run into the final seconds.
+- "Below-average EPA per drive" = league average EPA per drive for that season (not the team's own average).
+- Drives that span the end of the half: kept in the main run (see section 4), removed as a robustness check.
 
 ## 13. Data
 
