@@ -4,6 +4,8 @@ Status: agreed. Written BEFORE touching data so we can't quietly change definiti
 
 v1.1 (2026-11-18): added bucket B0 and the boundary rule (v1.0 buckets only covered the last 15 minutes of a 30-minute half), spelled out the drive-start rules, closed the open items, added the uncertainty method. No outcome data had been looked at.
 
+v1.2 (2026-11-18): added after seeing notebook 02 results. (a) Any-score rate (TD or FG) is now reported alongside TD rate, because TD rate is biased against drives that start late with little clock. The TD-rate result stays reported as originally specified. (b) Main focus is the 1st-half late surge; the 2nd half is analysed separately as a different situation (clock management, leading vs trailing) and used as a comparison.
+
 ## 1. The question
 
 Do NFL offenses score more (especially touchdowns) late in each half than earlier in that half? If so, why, and are teams leaving value on the table by not doing more of what causes it?
@@ -48,6 +50,8 @@ Time is `half_seconds_remaining`, measured at the start of the play. Buckets (mi
 
 **Play level:** EPA/play, success rate (EPA > 0).
 **Drive level:** TD rate (primary), points per drive, EPA per drive (secondary).
+
+- **Added v1.2:** any-score rate (TD or FG made), reported alongside TD rate.
 
 Why both: EPA doesn't know what coverage the defence is in, so a soft-zone underneath gain is credited as a real gain. TD rate doesn't have that problem. Field goals are excluded from the primary outcome because late in the 1st half teams often settle for them.
 

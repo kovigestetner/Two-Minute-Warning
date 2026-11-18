@@ -43,6 +43,9 @@ Claim B is the one that matters most. Claim A is the foundation.
 | 4 | The "so what": which mechanisms can an offense control, and are teams underusing them? | Not started |
 | 5 | Write-up and repo cleanup | Not started |
 
+| 2026-11-18 | After seeing TD rate fall late, added any-score rate (TD or FG) as a co-reported drive metric; TD-rate result kept as originally specified |
+| 2026-11-18 | Main focus is the 1st-half late surge; 2nd half end-of-game analysed separately as a different situation (decided after seeing notebook 02) |
+
 ## Key decisions and why
 
 The full definitions are in [`question-doc.md`](question-doc.md). The main decisions, and the reasoning behind them:
