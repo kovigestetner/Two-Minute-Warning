@@ -45,6 +45,7 @@ Claim B is the one that matters most. Claim A is the foundation.
 
 | 2026-11-18 | After seeing TD rate fall late, added any-score rate (TD or FG) as a co-reported drive metric; TD-rate result kept as originally specified |
 | 2026-11-18 | Main focus is the 1st-half late surge; 2nd half end-of-game analysed separately as a different situation (decided after seeing notebook 02) |
+2026-11-19: Def 2 tightened (doc v1.3) because the original flagged 55% of drives; decided before looking at any Claim B outcome. Original kept as a sensitivity check.
 
 ## Key decisions and why
 
@@ -128,7 +129,7 @@ hurry-up-offense/
 
 ## Findings
 
-*To be written once the analysis is done.*
+Phase 2: the 1st-half late surge (+0.06 to +0.09 EPA/play) appears equally for teams that had struggled earlier in the game and teams that hadn’t, so it isn’t a rebound from a bad stretch. Robust to 10 variations.
 
 ## Limitations (so far)
 
@@ -147,3 +148,18 @@ hurry-up-offense/
 | 2026-11-10 | Drive minimum of 30 seconds with field position controlled |
 | 2026-11-10 | "Struggled" defined two ways; lookback within the same game only |
 | 2026-11-10 | Game state kept out of the headline, used in mechanism step |
+Phase 3: mechanisms (notebook 04)
+
+The 1st-half "surge" is a valuation effect, not a performance one. EPA/play rises +0.079 in the last 4 minutes of the 1st half, but the football doesn't improve: yards and success rate are flat, and turnovers, sacks and explosive plays are slightly worse. Comparing plays with identical results (same down, distance, field position and outcome) shows why. Late in the half, EPA squeezes outcomes toward zero. An incompletion costs −0.45 instead of −0.78, and a sack −0.89 instead of −1.37, because with little time left a failed play really does cost fewer expected points. That repricing accounts for the whole gap (+0.096); the actual outcomes contribute −0.018.
+
+Everything else fits:
+
+the effect is the same for every team, game state and opponent
+no football factor explains it: no-huddle, pace, soft coverage, personnel, defensive substitutions and timeouts were all ruled out or went the opposite way
+90% of it survives every control
+
+Offenses and defenses really do change behaviour late (faster snaps, less play action, more and deeper passing; more DBs, fewer rushers, fewer subs), but it nets out to no raw gain.
+
+In the 2nd half, the late dip comes from leading teams running the clock, in every season since 2016.
+
+Scoreboard: results/phase3_scoreboard.csv.

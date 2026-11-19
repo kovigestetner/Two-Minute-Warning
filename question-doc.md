@@ -6,6 +6,8 @@ v1.1 (2026-11-18): added bucket B0 and the boundary rule (v1.0 buckets only cove
 
 v1.2 (2026-11-18): added after seeing notebook 02 results. (a) Any-score rate (TD or FG) is now reported alongside TD rate, because TD rate is biased against drives that start late with little clock. The TD-rate result stays reported as originally specified. (b) Main focus is the 1st-half late surge; the 2nd half is analysed separately as a different situation (clock management, leading vs trailing) and used as a comparison.
 
+v1.3 (2026-11-19): Definition 2 tightened. The original (first downs per drive below the season average, OR at least half of earlier drives three-and-outs) flagged 55.5% of drives with 3+ earlier drives, too loose to isolate struggling teams. New Def 2: the team’s first downs per drive over its earlier drives in the game is at or below the 25th percentile of that season (among drives with 3+ earlier drives), OR at least half of earlier drives are three-and-outs. This flags 28.7%; 51.4% of those are also Def 1. The original version is kept as struggled_2_loose for a sensitivity check. Decided before any Claim B outcome was examined; only the share of drives flagged was checked.
+v1.4 (2026-11-19): Claim B results. After a struggle (Def 1, Def 2 and the loose Def 2), late 1st-half drives show lower TD and any-score rates and higher drive EPA than mid-half drives, but the same pattern appears for drives not flagged. The struggled-minus-not-flagged difference is about 0 for all metrics with intervals spanning 0 (TD ±0.03, drive EPA ±0.23). At play level, late-vs-rest EPA/play is +0.059 to +0.067 after a struggle vs +0.074 to +0.087 otherwise (differences all spanning 0). Robust to lookback of 4/6/8 drives, 20/25 s minimum, cut-off drives removed, team-vs-itself, and prior-drive count. Conclusion: no evidence the late-half surge is a rebound from struggling. No new definitions were added after seeing outcomes.
 ## 1. The question
 
 Do NFL offenses score more (especially touchdowns) late in each half than earlier in that half? If so, why, and are teams leaving value on the table by not doing more of what causes it?
@@ -144,4 +146,52 @@ nflverse / nflfastR play-by-play, 2016-2025. Free, one row per play, includes EP
 - **Phase 2:** the struggle test (Claim B).
 - **Phase 3:** test each hypothesis, size each mechanism.
 - **Phase 4:** the "so what" for coaches.
-- **Phase 5:** README, repo cleanup, write-up.
+- **Phase 5:** README, repo cleanup, write-up.## Phase 3 pre-specification (doc v1.5, 2026-11-19)
+
+Written before any Phase 3 outcome was looked at. Anything changed after this point gets logged with date and reason.
+
+### Framing
+Phase 2 showed the 1st-half surge is not a rebound: struggling and non-struggling teams get the same boost. A boost that goes to everyone is still a finding, and arguably a bigger one. So Phase 3 asks two things: **(1) why does a surge show up for every team state**, and **(2) who gets more or less of it** (heterogeneity), not only whether some mechanism exists.
+
+### Fixed rules
+- Unit is the play. 1st half is primary, 2nd half is a comparison where it's cheap. Late = 240 s or less left, rest = the half's B0-B2 plays (unchanged from Phase 1).
+- Headline quantity: late minus rest in EPA/play, 1st half (Phase 1: +0.079). Notebook 04 re-derives it first as a check on the new code.
+- Intervals: 95% percentile bootstrap, resampling whole games, 1,000 draws.
+- **Mix vs within.** For a play characteristic X (no-huddle, pass/run, score state...), late-minus-rest = *mix* + *within*. Mix = what the gap would be if the only change late were a shift in how many plays of each X-type there are, valued at rest-of-half performance. Within = like-for-like gap with X held fixed. **Explained share = mix / total gap.** This is accounting, not causation.
+- **Verdict rule** (on the marginal share, one variable at a time): *main driver* if share >= 50% and its lower bound > 25%; *contributor* if lower bound > 10%; *ruled out* if upper bound < 20%; otherwise *unclear*. Incremental share in the ladder (Step 12) is reported next to it, because correlated variables (e.g. no-huddle and trailing) share credit.
+- Order: Step 1 first. If the surge disappears on raw outcomes, stop the mechanism chase and reframe.
+- Hypotheses that need participation/FTN data (H2, H5 personnel, H6) are only tested on seasons where those fields exist. If a field isn't there, the test is reported as "cannot test", not guessed.
+
+### Hypotheses, tests, rules
+| # | Idea | Primary test | Secondary | Evidence rule |
+|---|------|--------------|-----------|---------------|
+| Step 1 | Measurement: late EPA has a different baseline (EPA model knows the clock) | Late-minus-rest on raw outcomes: yards/play, first-down-or-TD rate, down-and-distance success (no EPA), explosive rate, turnover, sack; raw and like-for-like on down x distance | By bucket | Surge "survives" if first-down rate, raw success and yards/play gaps are all positive with lower bound > 0. If none are, it's an EPA artifact: stop and reframe. Mixed = partly artifact. |
+| H8 | Composition: better offenses / weaker defenses / better game states have the ball late | (a) team-quality composition: gap in offense quality + opposing-defense quality (season EPA, built without 1st-half late plays); (b) gap within the same team in the same game-half (fixed effects) | Home share | Supported if composition-predicted share >= 50% or the fixed-effects gap <= half the raw gap. Ruled out if both < 20%. |
+| H1 | No-huddle / pace | Marginal mix share by `no_huddle` flag | Surge among huddle-only plays; no-huddle vs huddle like-for-like (down x distance x score state); clean snap-to-snap tempo late vs rest; mix share by tempo tercile; fast vs slow tempo like-for-like | Verdict rule on the no-huddle share. If the surge is as big on huddle-only plays and tempo shows no late speed-up, pace is out. |
+| H7 | Game state (leader vs trailer, urgency) | Marginal mix share by score-state (5 bins) | Late gap within each state, both halves; 2nd-half state x season table for the 2024-25 flip | Verdict rule. Also: if the gap is similar in every state, state is not the engine. |
+| H2 | Prevent / soft coverage | Marginal mix share by defensive shell (DB count x pass rushers) on pass plays | Coverage type, man/zone, surge on non-soft plays only (<= 5 DBs and >= 4 rushers), pbp proxies (completion %, air yards, sacks) | Verdict rule. Without participation data: "cannot test", pbp proxies reported as indirect evidence only. |
+| H5 | Personnel / formation | Marginal mix share by personnel (RB/TE counts) x shotgun | WR count, shotgun alone (pbp only) | Verdict rule. |
+| H3 | Play-calling | Marginal mix share by pass vs run | Pass-depth mix (air yards bins), play-action/screen/motion/RPO rates (FTN, 2022+) | Verdict rule. |
+| H4 | Clock / timeouts / two-minute warning | Within the late window, plays with >= 2 timeouts vs <= 1, like-for-like (down x distance x score state) | 30-second slice profile of EPA vs rest, to see whether the jump sits at 3:00 or at the 2:00 warning | Supported if the >= 2 timeouts group is higher by >= 0.03 EPA/play with lower bound > 0. Slice profile is descriptive. |
+| H6 | Defensive substitution limits | Two links: (i) defense subs less often late (any_sub rate, clean-clock plays), (ii) plays where the defense didn't sub have higher EPA like-for-like | Mix share by any_sub; any_sub by tempo tercile | Supported only if both links hold (i: late any_sub rate lower with CI excluding 0; ii: difference > 0 with lower bound > 0) and mix share lower bound > 10%. |
+
+### Heterogeneity (question 2)
+Late-minus-rest gap by: offense-quality third, defense-quality third, pass-leaning third, home/away. Difference between extreme levels with a joint bootstrap. Descriptive; no verdict rule.
+
+### Joint accounting
+Ladder of regressions, EPA ~ late + controls, controls added in this order: down/distance/field position, score state, pass/run, no-huddle, shotgun, (personnel where available), then team-game-half fixed effects. Coefficient on `late` after each step, with the share of the raw gap each step removes. Order matters: this is a way to see how much is left, not a ranking.
+
+### Known limits (written now so they aren't discovered later)
+- Tempo is endogenous (teams going well play faster), so tempo and no-huddle results are associations. Snap-to-snap clock time is only used on clean intervals (prior play completed in bounds, no penalty, no timeout, not across the 2:00 warning, 8-45 s); unseen no-plays can still slip in.
+- Participation and FTN charting cover only some seasons. FTN data requires attribution (FTN Data via nflverse, CC-BY-SA 4.0) in the write-up.
+- "Explained share" is accounting and can exceed 100% or go negative; controlling for a mediator (e.g. pass/run) removes a mechanism's effect rather than a confound.Paste 1 → question-doc.md (version log + new section)
+
+v1.6 (2026-11-19). Added Step 1b (outcome-priced decomposition) after seeing the Step 1 result, to explain it. Diagnostic only: it doesn't add a new outcome or change any Phase 3 test. Result: of the +0.079 1st-half EPA gap, +0.096 comes from how EPA prices the same result late and −0.018 from what actually happened. Reframe: the project question moves from "why do offenses surge late in the 1st half" to "the end-of-half surge is a valuation effect, not a performance one: what does that mean?" The reframe came from the data and is logged here openly. The original question and all pre-specified tests stay as written.
+
+§9 Phase 3 results (v1.6)
+Step 1: raw outcomes don't surge (yards +0.01, success +0.001; turnovers, sacks and explosives worse). First-down rate +1.4 pts, rising late in both halves. Pre-spec verdict: partly artifact.
+Step 1b: the gap is valuation (+0.096 [0.090, 0.102]), not outcomes (−0.018 [−0.031, −0.002]).
+H8 composition: ruled out (0%). H1 no-huddle/pace: ruled out (1%, 3%). H7 game state, 1st half: ruled out (6%). H2 soft coverage: ruled out (−22%). H5 personnel/formation: ruled out (−8%). H6 defensive subs: link (i) holds, link (ii) fails, not supported. H3 pass/run: contributor (23%), read as feeding the valuation effect. H4 timeouts: opposite sign (−0.044).
+Heterogeneity: none clear. The effect is universal.
+Ladder: 90% of the gap survives all football controls.
+2nd half: the late dip comes from leading teams (−0.06 to −0.15 every season); trailing teams are ~0 to slightly positive.
