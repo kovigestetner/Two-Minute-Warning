@@ -36,3 +36,5 @@ Q5,Team clutch persistence fd (split),0.05183079107668268,-0.09023024813234629,0
 Q5,Team clutch persistence fd (season),-0.08598489858720396,-0.21512361754120193,0.03413340918678802,"noise [-0.137,+0.125] ref +0.050"
 Q5,D.Watson 2026 clutch residual succ_raw,0.02381145494563719,,,"pctl 55%, n_c 40"
 Q5,CLE 2026 clutch residual succ_raw,0.0051689437745943145,,,"pctl 51%, n_c 53"
+Q6,"go-ahead conversions, Q4 + OT, any time",4.563687747363133,,,"10/22, expected 5.4, p=0.024"
+Q6,"go-ahead conversions, last 5:00 + OT",2.9598397445941256,,,"5/10, expected 2.0, p=0.032"
