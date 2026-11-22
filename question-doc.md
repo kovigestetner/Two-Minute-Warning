@@ -1,13 +1,43 @@
-# Hurry Up Offense: Question Doc (v1.1)
+# The Two-Minute Warning: Question Doc
 
-Status: agreed. Written BEFORE touching data so we can't quietly change definitions to fit the result.
+**Status: complete (v1.7, 2026-11-20).** Written before touching data, then added to phase by phase. Every version is kept below so you can see what was decided before and after each result. Nothing has been deleted; superseded parts are marked.
+
+## Contents
+- Version log (just below)
+- Final answers
+- §1-14: original question, definitions and plan (v1.0-v1.3)
+- §15: Phase 3 pre-specification (v1.5)
+- §16: Phase 3 results (v1.6)
+- §17: Browns case study + clutch gene pre-specification (v1.7)
+- Change log (after seeing data)
+
+## Final answers
+
+| Question | Answer | Where |
+|---|---|---|
+| Claim A: do offenses do better late in halves? | In EPA, yes in the 1st half (+0.079 per play). On raw outcomes, no: yards and success flat, sacks and turnovers slightly worse. 2nd half: slightly lower | Notebook 02, §16 |
+| Claim B: do struggling teams surge more? | No. Same late bump as teams that weren't struggling | v1.4 below, notebook 03 |
+| Why does EPA rise late? | Valuation: EPA prices the same result higher late (+0.096) while outcomes are slightly worse (−0.018). Every football mechanism tested was ruled out | §15-16, notebook 04 |
+| What is real? | 2nd-half late dip comes from leading teams (every season); small first-down bump late in both halves | §16 |
+| 2026 Browns / clutch gene | They converted go-ahead chances at about twice the typical rate, but clutch doesn't persist in the data and comeback-heavy starts regress to ~.500. Forecast ~.46 for the last 7 games | §17, notebook 05 |
+
+## Version log
+
+v1.0 (Phase 0): original question, definitions and plan (§1-14).
 
 v1.1 (2026-11-18): added bucket B0 and the boundary rule (v1.0 buckets only covered the last 15 minutes of a 30-minute half), spelled out the drive-start rules, closed the open items, added the uncertainty method. No outcome data had been looked at.
 
 v1.2 (2026-11-18): added after seeing notebook 02 results. (a) Any-score rate (TD or FG) is now reported alongside TD rate, because TD rate is biased against drives that start late with little clock. The TD-rate result stays reported as originally specified. (b) Main focus is the 1st-half late surge; the 2nd half is analysed separately as a different situation (clock management, leading vs trailing) and used as a comparison.
 
 v1.3 (2026-11-19): Definition 2 tightened. The original (first downs per drive below the season average, OR at least half of earlier drives three-and-outs) flagged 55.5% of drives with 3+ earlier drives, too loose to isolate struggling teams. New Def 2: the team’s first downs per drive over its earlier drives in the game is at or below the 25th percentile of that season (among drives with 3+ earlier drives), OR at least half of earlier drives are three-and-outs. This flags 28.7%; 51.4% of those are also Def 1. The original version is kept as struggled_2_loose for a sensitivity check. Decided before any Claim B outcome was examined; only the share of drives flagged was checked.
+
 v1.4 (2026-11-19): Claim B results. After a struggle (Def 1, Def 2 and the loose Def 2), late 1st-half drives show lower TD and any-score rates and higher drive EPA than mid-half drives, but the same pattern appears for drives not flagged. The struggled-minus-not-flagged difference is about 0 for all metrics with intervals spanning 0 (TD ±0.03, drive EPA ±0.23). At play level, late-vs-rest EPA/play is +0.059 to +0.067 after a struggle vs +0.074 to +0.087 otherwise (differences all spanning 0). Robust to lookback of 4/6/8 drives, 20/25 s minimum, cut-off drives removed, team-vs-itself, and prior-drive count. Conclusion: no evidence the late-half surge is a rebound from struggling. No new definitions were added after seeing outcomes.
+
+v1.5 (2026-11-19): Phase 3 pre-specification added (§15), before any Phase 3 outcome was looked at.
+
+v1.6 (2026-11-19): Step 1b added after seeing Step 1 (details and reframe in §16).
+
+v1.7 (2026-11-20): Browns case study + clutch gene pre-specification added (§17), before any 2026 output was seen. Q6 added afterwards (see change log).
 ## 1. The question
 
 Do NFL offenses score more (especially touchdowns) late in each half than earlier in that half? If so, why, and are teams leaving value on the table by not doing more of what causes it?
@@ -91,6 +121,8 @@ The first drive of the 2nd half is a deliberately hard comparison because halfti
 
 ## 8. Hypothesis list (written before testing)
 
+*→ Tested in §15-16. Result: all ruled out as performance mechanisms; pass/run is a contributor that feeds the valuation effect.*
+
 | # | Hypothesis | How we'd test it |
 |---|---|---|
 | H1 | Pace / no-huddle | `no_huddle` flag; late rate vs efficiency with and without it |
@@ -145,8 +177,10 @@ nflverse / nflfastR play-by-play, 2016-2025. Free, one row per play, includes EP
 - **Phase 1:** verify. Efficiency by time bucket, both halves, all drives (Claim A).
 - **Phase 2:** the struggle test (Claim B).
 - **Phase 3:** test each hypothesis, size each mechanism.
-- **Phase 4:** the "so what" for coaches.
-- **Phase 5:** README, repo cleanup, write-up.## Phase 3 pre-specification (doc v1.5, 2026-11-19)
+- **Phase 4:** the "so what" for coaches. *→ Replaced by the v1.6 reframe (valuation, not performance) and the Browns case study (§17).*
+- **Phase 5:** README, repo cleanup, write-up. *→ Done: README and the story page.*
+
+## 15. Phase 3 pre-specification (v1.5, 2026-11-19)
 
 Written before any Phase 3 outcome was looked at. Anything changed after this point gets logged with date and reason.
 
@@ -184,44 +218,51 @@ Ladder of regressions, EPA ~ late + controls, controls added in this order: down
 ### Known limits (written now so they aren't discovered later)
 - Tempo is endogenous (teams going well play faster), so tempo and no-huddle results are associations. Snap-to-snap clock time is only used on clean intervals (prior play completed in bounds, no penalty, no timeout, not across the 2:00 warning, 8-45 s); unseen no-plays can still slip in.
 - Participation and FTN charting cover only some seasons. FTN data requires attribution (FTN Data via nflverse, CC-BY-SA 4.0) in the write-up.
-- "Explained share" is accounting and can exceed 100% or go negative; controlling for a mediator (e.g. pass/run) removes a mechanism's effect rather than a confound.Paste 1 → question-doc.md (version log + new section)
+- "Explained share" is accounting and can exceed 100% or go negative; controlling for a mediator (e.g. pass/run) removes a mechanism's effect rather than a confound.
 
-v1.6 (2026-11-19). Added Step 1b (outcome-priced decomposition) after seeing the Step 1 result, to explain it. Diagnostic only: it doesn't add a new outcome or change any Phase 3 test. Result: of the +0.079 1st-half EPA gap, +0.096 comes from how EPA prices the same result late and −0.018 from what actually happened. Reframe: the project question moves from "why do offenses surge late in the 1st half" to "the end-of-half surge is a valuation effect, not a performance one: what does that mean?" The reframe came from the data and is logged here openly. The original question and all pre-specified tests stay as written.
+## 16. Phase 3 results (v1.6, 2026-11-19)
 
-§9 Phase 3 results (v1.6)
-Step 1: raw outcomes don't surge (yards +0.01, success +0.001; turnovers, sacks and explosives worse). First-down rate +1.4 pts, rising late in both halves. Pre-spec verdict: partly artifact.
-Step 1b: the gap is valuation (+0.096 [0.090, 0.102]), not outcomes (−0.018 [−0.031, −0.002]).
-H8 composition: ruled out (0%). H1 no-huddle/pace: ruled out (1%, 3%). H7 game state, 1st half: ruled out (6%). H2 soft coverage: ruled out (−22%). H5 personnel/formation: ruled out (−8%). H6 defensive subs: link (i) holds, link (ii) fails, not supported. H3 pass/run: contributor (23%), read as feeding the valuation effect. H4 timeouts: opposite sign (−0.044).
-Heterogeneity: none clear. The effect is universal.
-Ladder: 90% of the gap survives all football controls.
-2nd half: the late dip comes from leading teams (−0.06 to −0.15 every season); trailing teams are ~0 to slightly positive.§7 Case study: 2026 Cleveland Browns + clutch gene (v1.7, 2026-11-20)
+**v1.6 note.** Added Step 1b (outcome-priced decomposition) after seeing the Step 1 result, to explain it. Diagnostic only: it doesn't add a new outcome or change any Phase 3 test. Result: of the +0.079 1st-half EPA gap, +0.096 comes from how EPA prices the same result late and −0.018 from what actually happened. Reframe: the project question moves from "why do offenses surge late in the 1st half" to "the end-of-half surge is a valuation effect, not a performance one: what does that mean?" The reframe came from the data and is logged here openly. The original question and all pre-specified tests stay as written.
+
+- Step 1: raw outcomes don't surge (yards +0.01, success +0.001; turnovers, sacks and explosives worse). First-down rate +1.4 pts, rising late in both halves. Pre-spec verdict: partly artifact.
+- Step 1b: the gap is valuation (+0.096 [0.090, 0.102]), not outcomes (−0.018 [−0.031, −0.002]).
+- H8 composition: ruled out (0%). H1 no-huddle/pace: ruled out (1%, 3%). H7 game state, 1st half: ruled out (6%). H2 soft coverage: ruled out (−22%). H5 personnel/formation: ruled out (−8%). H6 defensive subs: link (i) holds, link (ii) fails, not supported. H3 pass/run: contributor (23%), read as feeding the valuation effect. H4 timeouts: opposite sign (−0.044).
+- Heterogeneity: none clear. The effect is universal.
+- Ladder: 90% of the gap survives all football controls.
+- 2nd half: the late dip comes from leading teams (−0.06 to −0.15 every season); trailing teams are ~0 to slightly positive.
+
+## 17. Case study: 2026 Cleveland Browns + clutch gene (v1.7, 2026-11-20)
 
 Pre-specified before any 2026 output was seen. Notebook: notebooks/05_browns_case_study.ipynb.
 
-Data. nflverse pbp 2016-2026, regular season. 2026 cut-off: through Week 10 (CUTOFF_WEEK; Week 11 is CLE's bye). Plays = the notebook-01 filter (no kneels, spikes, 2-pt, rows without a down). Checked by reproducing Claim A (+0.079). OT is left out of every by-quarter number.
+**Data.** nflverse pbp 2016-2026, regular season. 2026 cut-off: through Week 10 (CUTOFF_WEEK; Week 11 is CLE's bye). Plays = the notebook-01 filter (no kneels, spikes, 2-pt, rows without a down). Checked by reproducing Claim A (+0.079). OT is left out of every by-quarter number.
 
-Metrics, clock-neutral first. succ_raw (yardage success: 40% of distance on 1st down, 60% on 2nd, 100% on 3rd/4th, no turnover), fd (first-down rate: gained the distance, no turnover), yds (yards/play), drive scoring rate (TD or FG), points per drive (TD = 7, FG = 3). EPA is shown alongside, never alone (§6 lesson: its baseline moves with the clock).
+**Metrics, clock-neutral first.** succ_raw (yardage success: 40% of distance on 1st down, 60% on 2nd, 100% on 3rd/4th, no turnover), fd (first-down rate: gained the distance, no turnover), yds (yards/play), drive scoring rate (TD or FG), points per drive (TD = 7, FG = 3). EPA is shown alongside, never alone (§16 lesson: its baseline moves with the clock).
 
-Game flags (built from the pbp score timeline):
+**Game flags** (built from the pbp score timeline):
 
-4th-quarter comeback win (cb): won, and trailed at some point in the 4th quarter (entering it or after any 4th-quarter play). Stricter cb_strict: also trailed by 1-8 at some point in the 4th (PFR/Kacsmar style). Ties don't count as wins.
-Game-winning drive (gwd): won, and took the lead for good in the 4th quarter or OT. This counts any go-ahead score, including the rare defensive or special-teams one (Kacsmar requires an offensive drive).
-Sanity gate: the definitions must give CLE 2026 a 6-4 record and 6 GWD wins before anything uses them on history. If they don't, fix the definition first and log it.
+- 4th-quarter comeback win (cb): won, and trailed at some point in the 4th quarter (entering it or after any 4th-quarter play). Stricter cb_strict: also trailed by 1-8 at some point in the 4th (PFR/Kacsmar style). Ties don't count as wins.
+- Game-winning drive (gwd): won, and took the lead for good in the 4th quarter or OT. This counts any go-ahead score, including the rare defensive or special-teams one (Kacsmar requires an offensive drive).
+- Sanity gate: the definitions must give CLE 2026 a 6-4 record and 6 GWD wins before anything uses them on history. If they don't, fix the definition first and log it.
 
-Q1. Good 4th quarter, or bad quarters 1-3? CLE 2026 by quarter vs the 2026 league (other teams) and vs CLE 2025. Tests: CLE minus league in Q1-3 and in Q4, plus the difference between the two, with intervals from resampling games. Reading: Q1-3 below the league and Q4 ≈ league means "slow starters, average finishers". Q4 above the league with an interval clear of 0 means a genuine late edge, which goes to Q2.
+**Q1.** Good 4th quarter, or bad quarters 1-3? CLE 2026 by quarter vs the 2026 league (other teams) and vs CLE 2025. Tests: CLE minus league in Q1-3 and in Q4, plus the difference between the two, with intervals from resampling games. Reading: Q1-3 below the league and Q4 ≈ league means "slow starters, average finishers". Q4 above the league with an interval clear of 0 means a genuine late edge, which goes to Q2.
 
-Q2. Better than a normal team in the same spot? CLE plays and drives in the 4th quarter when trailing or tied, vs league teams in the same cells (margin bins tied / 1-3 / 4-8 / 9-16 / 17+ down × time bins 15:00-10:00 / 10:00-5:00 / 5:00-2:00 / 2:00-0:00 of the 4th). The matched gap asks what the league would do with CLE's exact mix of situations. Reading: a matched gap ≈ 0 means game state explains it; a gap clear of 0 means CLE really was better than typical comeback teams.
+**Q2.** Better than a normal team in the same spot? CLE plays and drives in the 4th quarter when trailing or tied, vs league teams in the same cells (margin bins tied / 1-3 / 4-8 / 9-16 / 17+ down × time bins 15:00-10:00 / 10:00-5:00 / 5:00-2:00 / 2:00-0:00 of the 4th). The matched gap asks what the league would do with CLE's exact mix of situations. Reading: a matched gap ≈ 0 means game state explains it; a gap clear of 0 means CLE really was better than typical comeback teams.
 
-Q3. How much is the opponent? Opponents' offense when leading CLE in the 4th quarter vs league leaders in the same cells (lead bins 1-3 / 4-8 / 9-16 / 17+ × the same time bins). Measures: run rate, clock seconds per play, success, first-down rate, yds/play, EPA; drive score rate, three-and-out rate, points per drive. The defensive side of this question is Q2 by construction (CLE offense vs league trailing offenses in the same cells = opponents' defense vs league leading defenses), so it isn't repeated. Reading: opponents below matched leaders means part of the comeback is the opponent stalling. Points attribution: CLE excess points (Q2 gap × CLE drives) vs points the opponents left on the table (Q3 gap × their drives).
+**Q3.** How much is the opponent? Opponents' offense when leading CLE in the 4th quarter vs league leaders in the same cells (lead bins 1-3 / 4-8 / 9-16 / 17+ × the same time bins). Measures: run rate, clock seconds per play, success, first-down rate, yds/play, EPA; drive score rate, three-and-out rate, points per drive. The defensive side of this question is Q2 by construction (CLE offense vs league trailing offenses in the same cells = opponents' defense vs league leading defenses), so it isn't repeated. Reading: opponents below matched leaders means part of the comeback is the opponent stalling. Points attribution: CLE excess points (Q2 gap × CLE drives) vs points the opponents left on the table (Q3 gap × their drives).
 
-Q4. Will it last? (team level, 2016-2025) Split each team-season into games 1-10 ("early", matching CLE's 10 games) and 11+ ("rest"). Unusual = 4 or more GWD wins in the first 10 games (sensitivity: top 5% of the distribution). For flagged team-seasons: early vs rest win %, GWD and comeback rate per game, one-score win %, plus next-season win %. Also across all team-seasons: does early one-score win % predict rest one-score win % (min 3 early and 2 rest one-score games)? Compared with early point differential per game. Reading: a big drop from early to rest, and one-score record not predicting, means comeback runs are mostly luck that regresses. CLE 2026 gets a rest-of-season forecast from point differential + one-score record fitted on history.
+**Q4.** Will it last? (team level, 2016-2025) Split each team-season into games 1-10 ("early", matching CLE's 10 games) and 11+ ("rest"). Unusual = 4 or more GWD wins in the first 10 games (sensitivity: top 5% of the distribution). For flagged team-seasons: early vs rest win %, GWD and comeback rate per game, one-score win %, plus next-season win %. Also across all team-seasons: does early one-score win % predict rest one-score win % (min 3 early and 2 rest one-score games)? Compared with early point differential per game. Reading: a big drop from early to rest, and one-score record not predicting, means comeback runs are mostly luck that regresses. CLE 2026 gets a rest-of-season forecast from point differential + one-score record fitted on history.
 
-Q5. Clutch gene (persistence test). Clutch window = 4th quarter, last 5:00 (gsr ≤ 300), offense trailing or tied by 0-8 (needs to score). Sensitivity: |margin| ≤ 8 (adds one-score leads). Unit = QB (dropbacks, QB id = passer id, or rusher id on scrambles; ids, not names), and team (all plays). Residual per unit-season = clutch mean − non-clutch mean − that season's league clutch-minus-normal gap. Metrics: succ_raw (primary), fd, yds; EPA as a secondary check.
+**Q5.** Clutch gene (persistence test). Clutch window = 4th quarter, last 5:00 (gsr ≤ 300), offense trailing or tied by 0-8 (needs to score). Sensitivity: |margin| ≤ 8 (adds one-score leads). Unit = QB (dropbacks, QB id = passer id, or rusher id on scrambles; ids, not names), and team (all plays). Residual per unit-season = clutch mean − non-clutch mean − that season's league clutch-minus-normal gap. Metrics: succ_raw (primary), fd, yds; EPA as a secondary check.
 
 Persistence: (a) split-half: odd vs even team games in the same season, min 12 clutch and 100 other plays in each half; (b) season t vs t+1: min 25 clutch and 200 other plays in each season.
 Noise baseline: reshuffle which plays count as clutch within each unit-season (same counts), 100 times. This gives the band of correlations noise alone produces. Detectability reference: on the same reshuffles, the persistence of the unit's raw level on clutch-sized samples. This shows how much real, stable skill shows through on samples this small.
 Reading: r above the noise band means clutch is real-ish, and the next-season forecast for a clutch residual = r × this season's residual. r inside the band means it's mostly luck (judged against the detectability reference: if even true skill barely shows on samples this small, the test is weak, and that's said too). Watson 2026 and CLE 2026 are then placed on the distribution.
 
-Sample-size warning. 10 games is tiny. Q1-Q3 are descriptive, with intervals that resample CLE's games (and the league's). Q4-Q5 are where the real inference is (hundreds of team-seasons and QB-seasons). Intervals: NBOOT = 1000 game (or unit) resamples, percentile 95%.
+**Sample-size warning.** 10 games is tiny. Q1-Q3 are descriptive, with intervals that resample CLE's games (and the league's). Q4-Q5 are where the real inference is (hundreds of team-seasons and QB-seasons). Intervals: NBOOT = 1000 game (or unit) resamples, percentile 95%.
 
-Change log (after seeing data). Any change gets a date and a reason here and in the doc. None yet.
+## Change log (after seeing data)
+
+Any change gets a date and a reason here.
+
+- 2026-11-20: **Q6 added after seeing Q1-Q5** (post hoc, exploratory), to test the "Watson has been clutch" claim on its own terms. A go-ahead chance = any drive starting in the 4th quarter or OT with the offense tied or down 1-8; converted = the drive put them ahead. Each chance gets the league's 2016-2025 conversion rate for the same margin × time cell. Result: 10 of 22 converted vs 5.4 expected (p = 0.024). Caveat: the Browns were chosen because they won close games, so a low p is partly built in.
