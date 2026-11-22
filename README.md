@@ -17,7 +17,7 @@ During an NFL game this season I saw a broadcast graphic that matched something 
 - **What is real:** late in the second half, teams protecting a lead get worse, every season.
 - **Case study:** the 2026 Browns (6-4, six game-winning drives) really have delivered late, but Watson plays like himself play to play, and history says starts like theirs regress to about .500.
 
-There's also a plain-English version with charts for non-data people: [The Two-Minute Warning (story page)](https://claude.ai/artifact/CRBycDr9KgoijEiUHDEWgx).
+There's also a plain-English version with charts for non-data people: [The Two-Minute Warning (PDF)](report/The-Two-Minute-Warning.pdf).
 
 ---
 
